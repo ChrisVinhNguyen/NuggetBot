@@ -18,5 +18,12 @@ class Democracy(commands.Cog):
         response = "Watch poll"
         await ctx.send(response)
 
+
+    @commands.command(name = 'activity', help = 'Start a what to do poll')
+    async def activityPoll(self, ctx):
+        print('Starting activity poll')
+        response = "Activity poll"
+        await ctx.send(response)
+
 def setup(client):
     client.add_cog(Democracy(client))
