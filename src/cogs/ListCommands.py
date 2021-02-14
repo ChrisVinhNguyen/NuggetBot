@@ -5,7 +5,7 @@ from utils.ListManager import ListManager
 from utils.enums.ChannelNames import ChannelNames
 from utils.api.DiscordRepository import DiscordRepository
 
-class BotLists(commands.Cog):
+class Lists(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.listManager = ListManager(bot)
@@ -21,12 +21,7 @@ class BotLists(commands.Cog):
     async def add_to_watch(self, ctx, *args):
         print('Adding to watch list')
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.watch)
-        if(len(args) == 0):
-            await ctx.send(embed = discord.Embed(title="Oops!", description = "Nothing was passed in"))
-        else:
-            if(ctx.channel != channel):
-                await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the watch list"))
-            message = await channel.send(' '.join(args))
+        await ctx.send(embed = self.listManager.get_movie_embed(args, ctx.author.display_name))
 
 
     @commands.command(name = 'addToActivity', help = 'Add a new activity to the activity list')
@@ -38,7 +33,7 @@ class BotLists(commands.Cog):
         else:
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the activity list"))
-            message = await channel.send(' '.join(args))
+            message = await channel.send(self.listManager.get_activity_string(args))
 
 def setup(client):
-    client.add_cog(BotLists(client))
+    client.add_cog(Lists(client))
