@@ -15,8 +15,8 @@ class ListManager:
         if(len(movie) == 0):
             return discord.Embed(title="Oops!", description = "Nothing was passed in")
         else:
-            movieData = self.get_movie_data(' '.join(movie))
-            return self.map_movie_to_embed(movieData, True, submitter)
+            movieData = self.get_movie_data(movie)
+            return self.map_movie_to_embed(movieData, True, submitter), movieData
 
 
     def get_movie_data(self, movie):
