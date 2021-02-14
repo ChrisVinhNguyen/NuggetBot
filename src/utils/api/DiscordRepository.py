@@ -2,7 +2,7 @@ import discord
 
 from utils.enums.PollType import PollType
 
-class DiscordUtils:
+class DiscordRepository:
     def __init__(self, bot):
         self.bot = bot
 

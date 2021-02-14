@@ -1,10 +1,10 @@
 import discord
 
-from utils.api.DiscordUtils import DiscordUtils
+from utils.api.DiscordRepository import DiscordRepository
 
 class MessageParser:
     def __init__(self, bot):
-        self.discordUtils = DiscordUtils(bot)
+        self.discordUtils = DiscordRepository(bot)
 
     async def get_poll_data(self, guildId, pollType):
         messages = await self.discordUtils.fetch_list_messages(guildId, pollType)
