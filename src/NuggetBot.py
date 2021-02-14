@@ -27,5 +27,5 @@ async def on_ready():
 
 
 # Run the bot
-bot.run("ODEwMzc0MTI3NDUzODYzOTc2.YCituA.o2RyLGx5iqqMu5Yma6qlqzDeR_M")
+bot.run(os.getenv("DISCORD_BOT_TOKEN"))
 
