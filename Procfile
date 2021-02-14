@@ -1,1 +1,1 @@
-worker: python NuggetBot.py
+worker: python src/NuggetBot.py

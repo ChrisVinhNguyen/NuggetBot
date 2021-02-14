@@ -15,7 +15,7 @@ bot = commands.Bot(
 )
 
 # Load commands on startup
-for filename in os.listdir('./cogs'):
+for filename in os.listdir('./src/cogs'):
     if filename.endswith('.py'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
