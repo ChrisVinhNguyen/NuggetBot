@@ -12,6 +12,7 @@ class ImdbRepository:
         self.imdb.update(movie, ["main"])
 
         movieData = Movie(url = self.imdb.get_imdbURL(movie))
+        print(movie.keys())
 
         if "title" in movie:
             movieData.title = movie["title"]
@@ -19,8 +20,9 @@ class ImdbRepository:
         if "plot outline" in movie:
             movieData.plotOutline = movie["plot outline"]
 
-        if "runtime" in movie:
-            movieData.runtime = str(movie["runtimes"])
+        if "runtimes" in movie:
+            if(len(movie["runtimes"]) > 0):
+                movieData.runtime = str(movie["runtimes"][0]) + " minutes"
         
         if "rating" in movie:
             movieData.rating = str(movie["rating"])
@@ -30,7 +32,10 @@ class ImdbRepository:
         elif "year" in movie:
             movieData.releaseDate = movie["year"]
 
-        if "cover url" in movie:
-            movieData.coverUrl = movie["cover url"]
+        try:
+            movieData.coverUrl = movie["full-size cover url"]
+        except KeyError:
+            if "cover url" in movie:
+                movieData.coverUrl = movie["cover url"]
         
         return movieData
