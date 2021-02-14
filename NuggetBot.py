@@ -1,5 +1,4 @@
 import discord
-import config
 import os
 
 from discord.ext import commands
@@ -37,5 +36,5 @@ async def unload(ctx, extension):
 
 
 # Run the bot
-bot.run(config.TOKEN)
+bot.run(os.getenv("DISCORD_BOT_TOKEN"))
 
