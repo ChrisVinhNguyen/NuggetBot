@@ -25,15 +25,6 @@ for filename in os.listdir('./src/cogs'):
 async def on_ready():
     print('Logged in as {0.user}'.format(bot))
 
-# Default Commands
-@bot.command(help = 'Load new commands')
-async def load(ctx, extension):
-    bot.load_extension(f'cogs.{extension}')
-
-@bot.command(help = 'Unload commands')
-async def unload(ctx, extension):
-    bot.unload_extension(f'cogs.{extension}')
-
 
 # Run the bot
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
