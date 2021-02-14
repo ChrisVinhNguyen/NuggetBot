@@ -32,7 +32,7 @@ class Democracy(commands.Cog):
 
             await channel.send(embed = discord.Embed(title="Vote!", description = "React to the movie you want to watch"))
             for data in pollData:
-                message = await channel.send(data)
+                message = await channel.send(embed = data)
                 await message.add_reaction('👍')
 
 
@@ -50,7 +50,7 @@ class Democracy(commands.Cog):
 
             await channel.send(embed = discord.Embed(title="Vote!", description = "React to what you want to do"))
             for data in pollData:
-                message = await channel.send(data)
+                message = await channel.send(embed = data)
                 await message.add_reaction('👍')
 
 def setup(client):
