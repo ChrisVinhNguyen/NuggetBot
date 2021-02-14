@@ -2,7 +2,7 @@ import discord
 
 from utils.api.DiscordRepository import DiscordRepository
 
-class MessageManager:
+class DemocracyManager:
     def __init__(self, bot):
         self.discordUtils = DiscordRepository(bot)
 

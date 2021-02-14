@@ -1,7 +1,7 @@
 import discord
 
 from discord.ext import commands
-from utils.MessageManager import MessageManager
+from utils.DemocracyManager import DemocracyManager
 from utils.enums.PollType import PollType
 from utils.enums.ChannelNames import ChannelNames
 from utils.api.DiscordRepository import DiscordRepository
@@ -9,7 +9,7 @@ from utils.api.DiscordRepository import DiscordRepository
 class Democracy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.messageManager = MessageManager(bot)
+        self.democracyManager = DemocracyManager(bot)
         self.discordRepository = DiscordRepository(bot)
     
     # Events
@@ -18,10 +18,10 @@ class Democracy(commands.Cog):
         print("Democracy is loaded")
 
     # Commands
-    @commands.command(name = 'watch', help = 'Start a what to watch poll')
+    @commands.command(name = 'pollWatch', help = 'Start a what to watch poll in the democracy channel')
     async def watch_poll(self, ctx):
         print('Starting watch poll')
-        pollData = await self.messageManager.get_poll_data(ctx.guild.id, PollType.watch)
+        pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.watch)
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
 
         if (len(pollData) == 0):
@@ -36,10 +36,10 @@ class Democracy(commands.Cog):
                 await message.add_reaction('👍')
 
 
-    @commands.command(name = 'activity', help = 'Start a what to do poll')
+    @commands.command(name = 'pollActivity', help = 'Start a what to do poll in the democracy channel')
     async def activity_poll(self, ctx):
         print('Starting activity poll')
-        pollData = await self.messageManager.get_poll_data(ctx.guild.id, PollType.activity)
+        pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.activity)
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
 
         if (len(pollData) == 0):
