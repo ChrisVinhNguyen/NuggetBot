@@ -25,6 +25,11 @@ for filename in os.listdir('./src/cogs'):
 async def on_ready():
     print('Logged in as {0.user}'.format(bot))
 
+@bot.event
+async def on_command_error(ctx, error):
+    print(error)
+    await ctx.send(error)
+
 # Default commands
 @bot.command(help = 'Deletes all messages in a channel. Use with caution')
 async def clear(ctx):
