@@ -11,12 +11,14 @@ class ListManager:
     def get_activity_string(self, activity):
         return ' '.join(activity)
 
-    def get_movie_embed(self, movie, submitter):
+    def get_movie_embed(self, movie, submitter, index):
         if(len(movie) == 0):
             return discord.Embed(title="Oops!", description = "Nothing was passed in")
         else:
             movieData = self.get_movie_data(movie)
-            return self.map_movie_to_embed(movieData, True, submitter), movieData
+            print(len(movieData))
+            embed, endOfList = self.map_movie_to_embed(movieData, True, submitter, index)
+            return embed, endOfList, movieData
 
 
     def get_movie_data(self, movie):
@@ -24,10 +26,11 @@ class ListManager:
         return self.imdbRepository.search_movie(movieName)
         
 
-    def map_movie_to_embed(self, movies, isConfirmation, submitter):
-        if(len(movies) == 0):
-            return discord.Embed(title="Oops!", description = "Nothing was found!")
-        movie = self.imdbRepository.fetch_movie_details(movies[0])
+    def map_movie_to_embed(self, movies, isConfirmation, submitter, index):
+        endOfList = len(movies) == index + 1
+        if(len(movies) < index + 1):
+            return discord.Embed(title="Oops!", description = "No results found!"), endOfList
+        movie = self.imdbRepository.fetch_movie_details(movies[index])
         movie.submitter = submitter
 
         print(movie)
@@ -40,6 +43,9 @@ class ListManager:
         embed.set_image(url = movie.coverUrl)
 
         if (isConfirmation):
-            embed.set_footer(text="Is this the movie you want to add? Press 👍 if yes and 👎 if not")
+            text= "Is this the movie you want to add? Press 👍 if yes and 👎 if not.\nResult " + str(index + 1) + " out of " + str(len(movies))
+            if(not endOfList):
+                text += ". Press ➡️ to see the next movie"
+            embed.set_footer(text = text)
     
-        return embed
+        return embed, endOfList

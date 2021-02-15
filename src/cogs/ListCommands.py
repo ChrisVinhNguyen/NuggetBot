@@ -1,4 +1,5 @@
 import discord
+import asyncio
 
 from discord.ext import commands
 from utils.ListManager import ListManager
@@ -10,6 +11,7 @@ class Lists(commands.Cog):
         self.bot = bot
         self.listManager = ListManager(bot)
         self.discordRepository = DiscordRepository(bot)
+        self.TIMEOUT = 30
     
     # Events
     @commands.Cog.listener()
@@ -21,23 +23,43 @@ class Lists(commands.Cog):
     async def add_to_watch(self, ctx, *args):
         print('Adding to watch list')
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.watch)
-        embed, movieData= self.listManager.get_movie_embed(args, ctx.author.display_name)
-        message = await ctx.send(embed = embed)
-        for embed in message.embeds:
-            if embed.title != "Oops!":
+        index = 0
+        endOfList = False
+        while (not endOfList):
+            embed, endOfList, movieData= self.listManager.get_movie_embed(args, ctx.author.display_name, index)
+            message = await ctx.send(embed = embed)
+            
+            if message.embeds[0].title != "Oops!":
                 await message.add_reaction('👍')
                 await message.add_reaction('👎')
+                if(not endOfList):
+                    await message.add_reaction('➡️')
+            else:
+                break
 
-        def check(reaction, user):
-            return user == ctx.author and (str(reaction.emoji) == '👍' or str(reaction.emoji) == '👎')
-
-        reaction, user = await self.bot.wait_for('reaction_add', check = check)
-        if (reaction.emoji == '👍'):
-            await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the watch list"))
-            await channel.send(embed = self.listManager.map_movie_to_embed(movieData, False, ctx.author.display_name))
-        else:
-            await ctx.send(embed = discord.Embed(title="Sorry!", description = "Entry not added to the watch list. Try specifying the exact movie title"))
-        await message.clear_reactions()
+            def check(reaction, user):
+                return user == ctx.author and (str(reaction.emoji) == '👍' or str(reaction.emoji) == '👎' or str(reaction.emoji) == '➡️')
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout = self.TIMEOUT , check = check)
+            except asyncio.TimeoutError:
+                await ctx.send(embed = discord.Embed(title="Timeout!", description = "Entry not added to the watch list. Make your selection " + str(self.TIMEOUT) + " seconds"))
+                await message.clear_reactions()
+                break
+            else:
+                if (reaction.emoji == '👍'):
+                    await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the watch list"))
+                    embed, endOfList = self.listManager.map_movie_to_embed(movieData, False, ctx.author.display_name, index)
+                    await channel.send(embed = embed)
+                    await message.clear_reactions()
+                    break
+                elif (reaction.emoji == '👎'):
+                    await ctx.send(embed = discord.Embed(title="Sorry!", description = "Entry not added to the watch list. Try specifying the exact movie title"))
+                    await message.clear_reactions()
+                    break
+                elif (reaction.emoji == '➡️'):
+                    index += 1
+                    await message.clear_reactions()
+            
     
 
 
