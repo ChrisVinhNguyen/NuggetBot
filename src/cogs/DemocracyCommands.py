@@ -30,10 +30,11 @@ class Democracy(commands.Cog):
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
 
-            await channel.send(embed = discord.Embed(title="Vote!", description = "React to the movie you want to watch"))
+            await channel.send(embed = discord.Embed(title="Vote!", description = "React to the movie you want/don't want to watch"))
             for data in pollData:
                 message = await channel.send(embed = data)
                 await message.add_reaction('👍')
+                await message.add_reaction('👎')
 
 
     @commands.command(name = 'pollActivity', help = 'Start a what to do poll in the democracy channel')
@@ -48,10 +49,11 @@ class Democracy(commands.Cog):
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
 
-            await channel.send(embed = discord.Embed(title="Vote!", description = "React to what you want to do"))
+            await channel.send(embed = discord.Embed(title="Vote!", description = "React to what you want/don't want to do"))
             for data in pollData:
                 message = await channel.send(embed = data)
                 await message.add_reaction('👍')
+                await message.add_reaction('👎')
 
 def setup(client):
     client.add_cog(Democracy(client))
