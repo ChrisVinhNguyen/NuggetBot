@@ -30,10 +30,6 @@ async def on_command_error(ctx, error):
     print(error)
     await ctx.send(error)
 
-# Default commands
-@bot.command(help = 'Deletes all messages in a channel. Use with caution')
-async def clear(ctx):
-    await ctx.channel.purge() 
 
 # Run the bot
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
