@@ -17,7 +17,7 @@ class DemocracyManager:
                 pollData.append(miniEmbed)
         elif pollType is PollType.activity:
             for message in messages:
-                pollData.append(discord.Embed(title= message.content).set_footer(text = "Press 👍 if you want to do this"))
+                pollData.append(discord.Embed(title= message.content).set_footer(text = "Press 👍 if you want to do this and 👎 if you don't"))
 
         return pollData
 
@@ -31,7 +31,7 @@ class DemocracyManager:
         miniEmbed.add_field(name = "Rating", value = self.get_field_value(embedDict, "Rating"), inline = True) 
         miniEmbed.add_field(name = "Submitter", value = self.get_field_value(embedDict, "Submitter"), inline = True) 
         miniEmbed.set_thumbnail(url = embedDict["image"]["url"])
-        miniEmbed.set_footer(text = "Press 👍 if you want to watch this")
+        miniEmbed.set_footer(text = "Press 👍 if you want to watch this and 👎 if you don't")
 
         return miniEmbed
 
