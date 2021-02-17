@@ -77,7 +77,7 @@ class Democracy(commands.Cog):
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
 
-            await channel.send(embed = discord.Embed(title="Vote!", description = "React to cast your vote", color = 0x2D7EFF))
+            await channel.send(embed = discord.Embed(title="Vote!", description = "React to cast your vote", color = 0x2F329F))
             for data in pollData:
                 message = await channel.send(embed = data)
                 if data.title != "Oops!":
