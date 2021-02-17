@@ -30,7 +30,7 @@ class ListManager:
         endOfList = len(movies) == index + 1
         startOfList = index == 0
         if(len(movies) < index + 1):
-            return discord.Embed(title="Oops!", description = "No results found!", color=0xFF0000), endOfList
+            return discord.Embed(title="Oops!", description = "No results found!", color=0xFF0000), endOfList, startOfList
         movie = self.imdbRepository.fetch_movie_details(movies[index])
         movie.submitter = submitter
 
