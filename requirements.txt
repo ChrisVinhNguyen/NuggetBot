@@ -2,3 +2,4 @@ discord.py
 imdbpy
 dataclasses
 asyncio
+discord-py-slash-command

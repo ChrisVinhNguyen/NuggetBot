@@ -1,5 +1,6 @@
 import discord
 
+from discord_slash import cog_ext, SlashContext
 from discord.ext import commands
 from utils.DemocracyManager import DemocracyManager
 from utils.enums.PollType import PollType
@@ -18,8 +19,8 @@ class Democracy(commands.Cog):
         print("Democracy is loaded")
 
     # Commands
-    @commands.command(name = 'pollWatch', help = 'Start a what to watch poll in the democracy channel')
-    async def watch_poll(self, ctx):
+    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollWatch', description = 'Start a what to watch poll in the democracy channel')
+    async def watch_poll(self, ctx: SlashContext):
         print('Starting watch poll')
         pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.watch)
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
@@ -37,7 +38,7 @@ class Democracy(commands.Cog):
                 await message.add_reaction('👎')
 
 
-    @commands.command(name = 'pollActivity', help = 'Start a what to do poll in the democracy channel')
+    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollActivity', description = 'Start a what to do poll in the democracy channel')
     async def activity_poll(self, ctx):
         print('Starting activity poll')
         pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.activity)

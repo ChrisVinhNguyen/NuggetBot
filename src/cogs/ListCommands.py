@@ -1,6 +1,7 @@
 import discord
 import asyncio
 
+from discord_slash import cog_ext, SlashContext
 from discord.ext import commands
 from utils.ListManager import ListManager
 from utils.enums.ChannelNames import ChannelNames
@@ -19,14 +20,14 @@ class Lists(commands.Cog):
         print("List commands are loaded")
 
     # Commands
-    @commands.command(name = 'addToWatch', help = 'Add a new movie/tv show to the watch list')
-    async def add_to_watch(self, ctx, *args):
+    @cog_ext.cog_subcommand(base = "Lists", name = 'addToWatch', description = 'Add a new movie/tv show to the watch list')
+    async def add_to_watch(self, ctx, *movie):
         print('Adding to watch list')
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.watch)
         index = 0
         endOfList = False
         while (not endOfList):
-            embed, endOfList, movieData= self.listManager.get_movie_embed(args, ctx.author.display_name, index)
+            embed, endOfList, movieData= self.listManager.get_movie_embed(movie, ctx.author.display_name, index)
             message = await ctx.send(embed = embed)
             
             if message.embeds[0].title != "Oops!":
@@ -37,8 +38,8 @@ class Lists(commands.Cog):
             else:
                 break
 
-            def check(reaction, user):
-                return user == ctx.author and (str(reaction.emoji) == '👍' or str(reaction.emoji) == '👎' or str(reaction.emoji) == '➡️')
+            def check(reaction, user): 
+                return user == ctx.author and message.id == reaction.message.id and (str(reaction.emoji) == '👍' or str(reaction.emoji) == '👎' or str(reaction.emoji) == '➡️')
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout = self.TIMEOUT , check = check)
             except asyncio.TimeoutError:
@@ -63,16 +64,16 @@ class Lists(commands.Cog):
     
 
 
-    @commands.command(name = 'addToActivity', help = 'Add a new activity to the activity list')
-    async def add_to_activity(self, ctx, *args):
+    @cog_ext.cog_subcommand(base = "Lists", name = 'addToActivity', description = 'Add a new activity to the activity list')
+    async def add_to_activity(self, ctx, *activity):
         print('Adding to activity list')
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.activity)
-        if(len(args) == 0):
+        if(len(activity) == 0):
             await ctx.send(embed = discord.Embed(title="Oops!", description = "Nothing was passed in"))
         else:
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the activity list"))
-            message = await channel.send(self.listManager.get_activity_string(args))
+            message = await channel.send(self.listManager.get_activity_string(activity))
 
    
 
