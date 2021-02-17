@@ -58,10 +58,11 @@ class Democracy(commands.Cog):
         for poll in self.pollList:
             for entry in poll.entries:
                 if (entry.message.id == reaction.message.id):
+                    users = await reaction.users().flatten()
                     if (reaction.emoji == '👍'):
-                        entry.votesFor = await reaction.users().flatten()
+                        entry.votesFor = users
                     elif (reaction.emoji == '👎'):
-                        entry.votesAgainst = await reaction.users().flatten()
+                        entry.votesAgainst = users
                     await poll.result.edit(embed = self.democracyManager.create_poll_results(poll.entries))
 
 

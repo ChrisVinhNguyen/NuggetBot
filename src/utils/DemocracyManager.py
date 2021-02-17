@@ -68,10 +68,39 @@ class DemocracyManager:
             if field["name"] == title:
                 return field["value"]
         return "No " + title + " available"
+
+
+    def filter_users(self, users):
+        for user in users:
+            if user.bot:
+                users.remove(user)
+        return users
+
+    def get_users_names(self, users):
+        if len(users) == 0:
+            return "None"
+
+        names = ""
+        for user in users:
+            names += user.display_name
+            if(user != users[-1]):
+                names += ", "
+        return names
+
     
     def create_poll_results(self, entries):
-        embed = discord.Embed(title="Results", description = "Results of the poll with be shown here")
-        for entry in entries:
-            if len(entry.votesFor) > 1 or len(entry.votesAgainst) > 1:
-                embed.add_field(name = entry.message.embeds[0].title, value = "For: " + str(len(entry.votesFor) - 1) + " Against:" + str(len(entry.votesAgainst) - 1))
+        embed = discord.Embed(title="Results")
+        sortedEntries = sorted(entries, key=lambda entry: len(entry.votesFor) - len(entry.votesAgainst), reverse=True)
+        for entry in sortedEntries:
+            filteredVotesFor = self.filter_users(entry.votesFor)
+            filteredVotesAgainst = self.filter_users(entry.votesAgainst)
+            if(len(filteredVotesFor) > 0 or len(filteredVotesAgainst) > 0):
+                embed.add_field(name = entry.message.embeds[0].title, value = "Score: " + str(len(filteredVotesFor) - len(filteredVotesAgainst)), inline=True)
+                embed.add_field(name = "👍", value = self.get_users_names(filteredVotesFor), inline=True)
+                embed.add_field(name = "👎", value = self.get_users_names(filteredVotesAgainst), inline=True)
+
+        if len(embed.fields) == 0:
+            embed.description = "No votes yet"
+
         return embed
+
