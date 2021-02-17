@@ -12,7 +12,7 @@ class Lists(commands.Cog):
         self.bot = bot
         self.listManager = ListManager(bot)
         self.discordRepository = DiscordRepository(bot)
-        self.TIMEOUT = 30
+        self.TIMEOUT = 60
     
     # Events
     @commands.Cog.listener()
@@ -26,20 +26,23 @@ class Lists(commands.Cog):
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.watch)
         index = 0
         endOfList = False
+        startOfList = True
         while (not endOfList):
-            embed, endOfList, movieData= self.listManager.get_movie_embed(movie, ctx.author.display_name, index)
+            embed, endOfList, startOfList, movieData= self.listManager.get_movie_embed(movie, ctx.author.display_name, index)
             message = await ctx.send(embed = embed)
             
             if message.embeds[0].title != "Oops!":
                 await message.add_reaction('👍')
                 await message.add_reaction('👎')
+                if(not startOfList):
+                    await message.add_reaction('⬅️')
                 if(not endOfList):
                     await message.add_reaction('➡️')
             else:
                 break
 
             def check(reaction, user): 
-                return user == ctx.author and message.id == reaction.message.id and (str(reaction.emoji) == '👍' or str(reaction.emoji) == '👎' or str(reaction.emoji) == '➡️')
+                return user == ctx.author and message.id == reaction.message.id and (str(reaction.emoji) == '👍' or str(reaction.emoji) == '👎' or str(reaction.emoji) == '⬅️' or str(reaction.emoji) == '➡️')
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout = self.TIMEOUT , check = check)
             except asyncio.TimeoutError:
@@ -49,7 +52,7 @@ class Lists(commands.Cog):
             else:
                 if (reaction.emoji == '👍'):
                     await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the watch list"))
-                    embed, endOfList = self.listManager.map_movie_to_embed(movieData, False, ctx.author.display_name, index)
+                    embed, endOfList, startOfList = self.listManager.map_movie_to_embed(movieData, False, ctx.author.display_name, index)
                     await channel.send(embed = embed)
                     await message.clear_reactions()
                     break
@@ -59,9 +62,11 @@ class Lists(commands.Cog):
                     break
                 elif (reaction.emoji == '➡️'):
                     index += 1
-                    await message.clear_reactions()
+                    await message.delete()
+                elif (reaction.emoji == '⬅️'):
+                    index -= 1
+                    await message.delete()
             
-    
 
 
     @cog_ext.cog_subcommand(base = "Lists", name = 'addToActivity', description = 'Add a new activity to the activity list')
