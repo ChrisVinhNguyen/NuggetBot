@@ -24,7 +24,7 @@ class DemocracyManager:
     def map_embed_to_mini(self, embed):
         embedDict = embed.to_dict()
         print(embedDict)
-        miniEmbed = discord.Embed(title= embedDict["title"], url = embedDict["url"], description = embedDict["description"], color=0x109319)
+        miniEmbed = discord.Embed(title= embedDict["title"], url = embedDict["url"], color=0x109319)
 
         miniEmbed.add_field(name = "Release Date", value = self.get_field_value(embedDict, "Release Date"), inline = True)
         miniEmbed.add_field(name = "Runtime", value = self.get_field_value(embedDict, "Runtime"), inline = True) 
