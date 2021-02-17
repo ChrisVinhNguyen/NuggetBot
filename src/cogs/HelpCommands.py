@@ -18,7 +18,7 @@ class Help(commands.Cog):
         print('Sending help message')
         helpText = "Hi I'm NuggetBot, I can manage the activity/watch lists on this server and conduct polls for what to do/watch"
         print(helpText)
-        embed = discord.Embed(title= "NuggetBot", url = "https://github.com/ChrisVinhNguyen/NuggetBot", description = helpText, color=0x109319)
+        embed = discord.Embed(title= "NuggetBot", url = "https://github.com/ChrisVinhNguyen/NuggetBot", description = helpText, color=0xFFFFFF)
         await ctx.send(embed = embed)
 
 def setup(client):

@@ -71,13 +71,13 @@ class Democracy(commands.Cog):
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
 
         if (len(pollData) == 0):
-            await ctx.send(embed = discord.Embed(title="Oops!", description = "There is nothing in " + pollType))
+            await ctx.send(embed = discord.Embed(title="Oops!", description = "There is nothing in " + pollType, color=0xFF0000))
         else: 
             entries = []
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
 
-            await channel.send(embed = discord.Embed(title="Vote!", description = "React to the movie you want/don't want to watch"))
+            await channel.send(embed = discord.Embed(title="Vote!", description = "React to cast your vote", color = 0x2D7EFF))
             for data in pollData:
                 message = await channel.send(embed = data)
                 if data.title != "Oops!":
@@ -92,7 +92,7 @@ class Democracy(commands.Cog):
                     entries.append(PollEntry(message, votesFor, votesAgainst))    
             result = await channel.send(embed = self.democracyManager.create_poll_results(entries))
             poll = Poll(entries, result)
-            self.addPollToQueue(poll)
+            await self.addPollToQueue(poll)
 
             for entry in entries:
                 if data.title != "Oops!":
@@ -100,9 +100,11 @@ class Democracy(commands.Cog):
                     await entry.message.add_reaction('👎')    
 
     
-    def addPollToQueue(self, poll):
+    async def addPollToQueue(self, poll):
         self.pollList.append(poll)
         if(len(self.pollList) > MAX_ACTIVE_POLLS):
+            poll = self.pollList[0]
+            await self.democracyManager.close_poll(poll)
             self.pollList.pop(0)
 
 
