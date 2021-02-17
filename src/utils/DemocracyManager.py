@@ -24,29 +24,31 @@ class DemocracyManager:
 
         if numberOfResults is not None:
             if numberOfResults > len(messages):
-                pollData.append(discord.Embed(title = "Oops!", description = "Requested number of results exceed number of entries in the " + pollType))
+                pollData.append(discord.Embed(
+                    title="Oops!", description="Requested number of results exceed number of entries in the " + pollType, color=0xFF0000))
             elif numberOfResults < 1:
-                pollData.append(discord.Embed(title = "Oops!", description = "Requested number of results must be at least 1"))
+                pollData.append(discord.Embed(
+                    title="Oops!", description="Requested number of results must be at least 1", color=0xFF0000))
 
             numberOfResults = self.clamp(numberOfResults, 1, len(messages))
             messages = random.sample(messages, numberOfResults)
 
         if pollType is PollType.watch:
             for message in messages:
-                miniEmbed=self.map_embed_to_mini(message.embeds[0])
+                miniEmbed = self.map_embed_to_mini(message.embeds[0])
                 pollData.append(miniEmbed)
         elif pollType is PollType.activity:
             for message in messages:
-                pollData.append(discord.Embed(title=message.content).set_footer(
+                pollData.append(discord.Embed(title=message.content, color=0xFF953B).set_footer(
                     text="Press 👍 if you want to do this and 👎 if you don't"))
 
         return pollData
 
     def map_embed_to_mini(self, embed):
-        embedDict=embed.to_dict()
+        embedDict = embed.to_dict()
         print(embedDict)
-        miniEmbed=discord.Embed(
-            title=embedDict["title"], url=embedDict["url"], color=0x109319)
+        miniEmbed = discord.Embed(
+            title=embedDict["title"], url=embedDict["url"], color=0xFF953B)
 
         miniEmbed.add_field(name="Release Date", value=self.get_field_value(
             embedDict, "Release Date"), inline=True)
@@ -63,12 +65,11 @@ class DemocracyManager:
         return miniEmbed
 
     def get_field_value(self, data, title):
-        fields=data["fields"]
+        fields = data["fields"]
         for field in fields:
             if field["name"] == title:
                 return field["value"]
         return "No " + title + " available"
-
 
     def filter_users(self, users):
         for user in users:
@@ -87,20 +88,29 @@ class DemocracyManager:
                 names += ", "
         return names
 
-    
     def create_poll_results(self, entries):
-        embed = discord.Embed(title="Results")
-        sortedEntries = sorted(entries, key=lambda entry: len(entry.votesFor) - len(entry.votesAgainst), reverse=True)
+        embed = discord.Embed(title="Results", color=0x2D7EFF)
+        sortedEntries = sorted(entries, key=lambda entry: len(
+            entry.votesFor) - len(entry.votesAgainst), reverse=True)
         for entry in sortedEntries:
             filteredVotesFor = self.filter_users(entry.votesFor)
             filteredVotesAgainst = self.filter_users(entry.votesAgainst)
             if(len(filteredVotesFor) > 0 or len(filteredVotesAgainst) > 0):
-                embed.add_field(name = entry.message.embeds[0].title, value = "Score: " + str(len(filteredVotesFor) - len(filteredVotesAgainst)), inline=True)
-                embed.add_field(name = "👍", value = self.get_users_names(filteredVotesFor), inline=True)
-                embed.add_field(name = "👎", value = self.get_users_names(filteredVotesAgainst), inline=True)
+                embed.add_field(name=entry.message.embeds[0].title, value="Score: " + str(
+                    len(filteredVotesFor) - len(filteredVotesAgainst)), inline=True)
+                embed.add_field(name="👍", value=self.get_users_names(
+                    filteredVotesFor), inline=True)
+                embed.add_field(name="👎", value=self.get_users_names(
+                    filteredVotesAgainst), inline=True)
 
         if len(embed.fields) == 0:
             embed.description = "No votes yet"
 
         return embed
 
+    async def close_poll(self, poll):
+        for entry in poll.entries:
+            await entry.message.clear_reactions()
+        resultEmbed = poll.result.embeds[0]
+        resultEmbed.set_footer(text="Poll is closed")
+        await poll.result.edit(embed=resultEmbed.set_footer(text="Poll is closed"))

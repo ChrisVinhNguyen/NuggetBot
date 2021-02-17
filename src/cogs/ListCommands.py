@@ -57,7 +57,7 @@ class Lists(commands.Cog):
                     await message.clear_reactions()
                     break
                 elif (reaction.emoji == '👎'):
-                    await ctx.send(embed = discord.Embed(title="Sorry!", description = "Entry not added to the watch list. Try specifying the exact movie title"))
+                    await ctx.send(embed = discord.Embed(title="Sorry!", description = "Entry not added to the watch list. Try specifying the exact movie title", color=0xFF0000))
                     await message.clear_reactions()
                     break
                 elif (reaction.emoji == '➡️'):
@@ -74,7 +74,7 @@ class Lists(commands.Cog):
         print('Adding to activity list')
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.activity)
         if(len(activity) == 0):
-            await ctx.send(embed = discord.Embed(title="Oops!", description = "Nothing was passed in"))
+            await ctx.send(embed = discord.Embed(title="Oops!", description = "Nothing was passed in", color=0xFF0000))
         else:
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the activity list"))
