@@ -17,8 +17,8 @@ class ListManager:
         else:
             movieData = self.get_movie_data(movie)
             print(len(movieData))
-            embed, endOfList = self.map_movie_to_embed(movieData, True, submitter, index)
-            return embed, endOfList, movieData
+            embed, endOfList, startOfList = self.map_movie_to_embed(movieData, True, submitter, index)
+            return embed, endOfList, startOfList, movieData
 
 
     def get_movie_data(self, movie):
@@ -28,6 +28,7 @@ class ListManager:
 
     def map_movie_to_embed(self, movies, isConfirmation, submitter, index):
         endOfList = len(movies) == index + 1
+        startOfList = index == 0
         if(len(movies) < index + 1):
             return discord.Embed(title="Oops!", description = "No results found!"), endOfList
         movie = self.imdbRepository.fetch_movie_details(movies[index])
@@ -44,8 +45,10 @@ class ListManager:
 
         if (isConfirmation):
             text= "Is this the movie you want to add? Press 👍 if yes and 👎 if not.\nResult " + str(index + 1) + " out of " + str(len(movies))
+            if(not startOfList):
+                text += ". Press ⬅️ to see the previous movie"
             if(not endOfList):
                 text += ". Press ➡️ to see the next movie"
             embed.set_footer(text = text)
     
-        return embed, endOfList
+        return embed, endOfList, startOfList
