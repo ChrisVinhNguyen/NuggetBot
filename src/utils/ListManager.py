@@ -34,8 +34,8 @@ class ListManager:
         movie.submitter = submitter
 
         print(movie)
-    
-        embed = discord.Embed(title= movie.title, url = movie.url, description = movie.plotOutline, color=0x109319)
+
+        embed = discord.Embed(title= movie.title, url = movie.url, description = movie.plotOutline[:2000], color=0x109319)
         embed.add_field(name = "Release Date", value = movie.releaseDate, inline = True)
         embed.add_field(name = "Runtime", value = movie.runtime, inline = True) 
         embed.add_field(name = "Rating", value = movie.rating, inline = True) 
