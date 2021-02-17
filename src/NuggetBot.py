@@ -23,13 +23,14 @@ for filename in os.listdir('./src/cogs'):
     if filename.endswith('.py'):
         bot.load_extension(f'cogs.{filename[:-3]}')
 
-@slash.slash(name="help", description = "Show the help message")
-async def help(ctx):
-    helpText = "Hi I'm NuggetBot, I can manage the watch/activity lists on this server and conduct polls for what to do/watch"
-    print(helpText)
-    embed = discord.Embed(title= "Help", url = "https://github.com/ChrisVinhNguyen/NuggetBot", description = helpText, color=0x109319)
-    await ctx.send(embed = embed)
 
+def is_PvtNugget(ctx):
+    return ctx.author.id == 172324677681676288
+
+@bot.command()
+@commands.check(is_PvtNugget)
+async def clear(ctx):
+    await ctx.channel.purge()
 
 # Default Events
 @bot.event
