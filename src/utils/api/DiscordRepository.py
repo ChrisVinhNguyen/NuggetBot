@@ -18,6 +18,13 @@ class DiscordRepository:
             if (channel.name == channelName):
                 return channel
 
+    
+    def fetch_channel_by_id(self, guildId, channelId):
+        channels = self.fetch_all_channels(guildId)
+        for channel in channels:
+            if (channel.id == channelId):
+                return channel
+
 
     async def fetch_list_messages(self, guildId, pollType):
         channels = self.fetch_all_channels(guildId)

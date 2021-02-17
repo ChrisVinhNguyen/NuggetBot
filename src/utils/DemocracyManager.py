@@ -2,6 +2,7 @@ import discord
 import random
 
 from utils.enums.PollType import PollType
+from utils.models.Poll import PollEntry
 from utils.api.DiscordRepository import DiscordRepository
 
 
@@ -67,3 +68,10 @@ class DemocracyManager:
             if field["name"] == title:
                 return field["value"]
         return "No " + title + " available"
+    
+    def create_poll_results(self, entries):
+        embed = discord.Embed(title="Results", description = "Results of the poll with be shown here")
+        for entry in entries:
+            if len(entry.votesFor) > 1 or len(entry.votesAgainst) > 1:
+                embed.add_field(name = entry.message.embeds[0].title, value = "For: " + str(len(entry.votesFor) - 1) + " Against:" + str(len(entry.votesAgainst) - 1))
+        return embed

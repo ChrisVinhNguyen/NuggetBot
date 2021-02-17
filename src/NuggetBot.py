@@ -1,8 +1,10 @@
 import discord
 import os
 
+from utils.enums.MemberIds import MemberIds
 from discord.ext import commands
 from discord_slash import SlashCommand
+
 
 
 # Change the no_category default string
@@ -11,9 +13,13 @@ help_command = commands.DefaultHelpCommand(
 )
 
 # Initialize commands
+intents = discord.Intents.default()
+intents.members = True
+
 bot = commands.Bot(
     command_prefix = commands.when_mentioned_or('/'),
-    help_command = None
+    help_command = None,
+    intents = intents
 )
 
 slash = SlashCommand(bot, override_type = True, sync_commands = True)
@@ -25,7 +31,7 @@ for filename in os.listdir('./src/cogs'):
 
 
 def is_PvtNugget(ctx):
-    return ctx.author.id == 172324677681676288
+    return ctx.author.id == MemberIds.author
 
 @bot.command()
 @commands.check(is_PvtNugget)
