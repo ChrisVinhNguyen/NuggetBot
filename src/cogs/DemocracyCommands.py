@@ -7,11 +7,14 @@ from utils.enums.PollType import PollType
 from utils.enums.ChannelNames import ChannelNames
 from utils.api.DiscordRepository import DiscordRepository
 
+MAX_ACTIVE_POLLS = 10
+
 class Democracy(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.democracyManager = DemocracyManager(bot)
         self.discordRepository = DiscordRepository(bot)
+        self.pollList = []
     
     # Events
     @commands.Cog.listener()
@@ -22,31 +25,28 @@ class Democracy(commands.Cog):
     @cog_ext.cog_subcommand(base = "Democracy", name = 'pollWatch', description = 'Start a what to watch poll in the democracy channel')
     async def watch_poll(self, ctx: SlashContext):
         print('Starting watch poll')
-        pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.watch)
-        channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
+        await self.createPoll(ctx = ctx, pollType = PollType.watch)
 
-        if (len(pollData) == 0):
-            await ctx.send(embed = discord.Embed(title="Oops!", description = "There is nothing in " + PollType.watch))
-        else: 
-            if(ctx.channel != channel):
-                await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
-
-            await channel.send(embed = discord.Embed(title="Vote!", description = "React to the movie you want/don't want to watch"))
-            for data in pollData:
-                message = await channel.send(embed = data)
-                await message.add_reaction('👍')
-                await message.add_reaction('👎')
 
 
     @cog_ext.cog_subcommand(base = "Democracy", name = 'pollWatchRandom', description = 'Start a what to watch poll in the democracy channel with random entries from the watch list')
     async def watch_poll_random(self, ctx, numberOfMovies: int):
         print('Starting watch poll')
+        await self.createPoll(ctx = ctx, pollType = PollType.watch, numberOfResults = numberOfMovies)
 
-        pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.watch, numberOfMovies)
+
+    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollActivity', description = 'Start a what to do poll in the democracy channel')
+    async def activity_poll(self, ctx):
+        print('Starting activity poll')
+        await self.createPoll(ctx = ctx, pollType = PollType.activity)
+
+
+    async def createPoll(self, ctx, pollType, numberOfResults = None):
+        pollData = await self.democracyManager.get_poll_data(ctx.guild.id, pollType, numberOfResults)
         channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
 
         if (len(pollData) == 0):
-            await ctx.send(embed = discord.Embed(title="Oops!", description = "There is nothing in " + PollType.watch))
+            await ctx.send(embed = discord.Embed(title="Oops!", description = "There is nothing in " + pollType))
         else: 
             if(ctx.channel != channel):
                 await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
@@ -58,24 +58,6 @@ class Democracy(commands.Cog):
                     await message.add_reaction('👍')
                     await message.add_reaction('👎')
 
-
-    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollActivity', description = 'Start a what to do poll in the democracy channel')
-    async def activity_poll(self, ctx):
-        print('Starting activity poll')
-        pollData = await self.democracyManager.get_poll_data(ctx.guild.id, PollType.activity)
-        channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.democracy)
-
-        if (len(pollData) == 0):
-            await ctx.send(embed = discord.Embed(title="Oops!", description = "There is nothing in " + PollType.activity))
-        else: 
-            if(ctx.channel != channel):
-                await ctx.send(embed = discord.Embed(title="Poll's up!", description = "Check democracy for the poll"))
-
-            await channel.send(embed = discord.Embed(title="Vote!", description = "React to what you want/don't want to do"))
-            for data in pollData:
-                message = await channel.send(embed = data)
-                await message.add_reaction('👍')
-                await message.add_reaction('👎')
 
 def setup(client):
     client.add_cog(Democracy(client))
