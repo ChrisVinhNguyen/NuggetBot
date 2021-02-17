@@ -3,3 +3,4 @@ imdbpy
 dataclasses
 asyncio
 discord-py-slash-command
+random
