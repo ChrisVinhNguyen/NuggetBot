@@ -35,6 +35,9 @@ class DemocracyManager:
 
         if pollType is PollType.watch:
             for message in messages:
+                if len(message.embeds) = 0:
+                    print(message)
+                    continue
                 miniEmbed = self.map_embed_to_mini(message.embeds[0])
                 pollData.append(miniEmbed)
         elif pollType is PollType.activity:
