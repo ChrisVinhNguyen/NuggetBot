@@ -40,10 +40,11 @@ class DemocracyManager:
                     continue
                 miniEmbed = self.map_embed_to_mini(message.embeds[0])
                 pollData.append(miniEmbed)
-        elif pollType is PollType.activity:
+        elif pollType is PollType.activity or PollType.activity_secondary:
             for message in messages:
                 pollData.append(discord.Embed(title=message.content, color=0xFF953B).set_footer(
                     text="Press 👍 if you want to do this and 👎 if you don't"))
+
 
         return pollData
 
