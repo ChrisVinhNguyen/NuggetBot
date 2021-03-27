@@ -1,4 +1,5 @@
 class ChannelNames:
         watch = "watch-list"
         activity = "activity-list"
+        activity_secondary = "activity-list-secondary"
         democracy = "democracy"

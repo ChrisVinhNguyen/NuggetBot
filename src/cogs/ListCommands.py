@@ -80,6 +80,17 @@ class Lists(commands.Cog):
                 await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the activity list"))
             message = await channel.send(self.listManager.get_activity_string(activity))
 
+
+    @cog_ext.cog_subcommand(base = "Lists", name = 'addToSecondary', description = 'Add a new activity to the secondary activity list')
+    async def add_to_activity_secondary(self, ctx, *activity):
+        print('Adding to activity list')
+        channel = self.discordRepository.fetch_channel(ctx.guild.id, ChannelNames.activity_secondary)
+        if(len(activity) == 0):
+            await ctx.send(embed = discord.Embed(title="Oops!", description = "Nothing was passed in", color=0xFF0000))
+        else:
+            if(ctx.channel != channel):
+                await ctx.send(embed = discord.Embed(title="Added!", description = "Entry added to the activity list"))
+            message = await channel.send(self.listManager.get_activity_string(activity))
    
 
 def setup(client):

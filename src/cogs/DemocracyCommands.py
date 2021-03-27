@@ -36,10 +36,16 @@ class Democracy(commands.Cog):
         await self.createPoll(ctx = ctx, pollType = PollType.watch, numberOfResults = numberOfMovies)
 
 
-    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollActivity', description = 'Start a what to do poll in the democracy channel')
+    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollActivity', description = 'Start a what to do poll in the democracy channel with the main activities')
     async def activity_poll(self, ctx):
         print('Starting activity poll')
         await self.createPoll(ctx = ctx, pollType = PollType.activity)
+
+        
+    @cog_ext.cog_subcommand(base = "Democracy", name = 'pollSecondary', description = 'Start a what to do poll in the democracy channel with the secondary activities')
+    async def activity_poll_secondary(self, ctx):
+        print('Starting activity poll')
+        await self.createPoll(ctx = ctx, pollType = PollType.activity_secondary)
 
 
     @commands.Cog.listener()
